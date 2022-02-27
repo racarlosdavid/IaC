@@ -83,6 +83,18 @@ resource "azurerm_network_security_group" "myterraformnsg" {
         destination_address_prefix = "*"
     }
 
+    security_rule {
+        name                       = "PORT TERRAFORM 80"
+        priority                   = 1003
+        direction                  = "Inbound"
+        access                     = "Allow"
+        protocol                   = "Tcp"
+        source_port_range          = "*"
+        destination_port_range     = "80"
+        source_address_prefix      = "*"
+        destination_address_prefix = "*"
+    }
+
     tags = {
         environment = "Terraform Demo"
     }
@@ -203,9 +215,6 @@ resource "azurerm_virtual_machine_extension" "myterraformgroup" {
 
     name                  = "myVM"
     virtual_machine_id   = azurerm_linux_virtual_machine.myterraformvm.id
-    #location              = "centralus"
-    #resource_group_name   = azurerm_resource_group.myterraformgroup.name
-    #virtual_machine_name = azurerm_linux_virtual_machine.myterraformvm.name
     publisher            = "Microsoft.Azure.Extensions"
     type                 = "CustomScript"
     type_handler_version = "2.0"
@@ -216,18 +225,8 @@ resource "azurerm_virtual_machine_extension" "myterraformgroup" {
         }
     SETTINGS
 
-    #provisioner "local-exec" {
-        #command = "mkdir /home/azureuser/test"
-    #}
-
   tags = {
     environment = "Production"
   }
 }
 
-#resource "azurerm_image" "example" {
-  #name                      = "imageSA"
-  #location = "centralus"
-  #resource_group_name       = data.azurerm_resource_group.myterraformvm.name
-  #source_virtual_machine_id = azurerm_virtual_machine.myVM2.id
-#}
